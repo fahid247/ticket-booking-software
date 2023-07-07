@@ -1,28 +1,28 @@
 #include <stdio.h>
 
 void adminDashboard() {
-    printf("Admin Dashboard\");
+    printf("Admin Dashboard\n");
 }
 
 void userDashboard() {
-    printf("User Dashboard\");
+    printf("User Dashboard\n");
 }
 
 void newUserDashboard() {
-    printf("New User Dashboard\");
+    printf("New User Dashboard\n");
 }
 
 int main() {
     int choice;
     
-    printf("Train Ticket Management Program\");
+    printf("Train Ticket Management Program\n");
     
     while (1) {
-        printf("\Dashboard Options:\");
-        printf("1. Admin\");
-        printf("2. User\");
-        printf("3. New User\");
-        printf("0. Exit\");
+        printf("\Dashboard Options:\n");
+        printf("1. Admin\n");
+        printf("2. User\n");
+        printf("3. New User\n");
+        printf("0. Exit\n");
         
         printf("\Enter your choice: ");
         scanf("%d", &choice);
@@ -38,10 +38,10 @@ int main() {
                 newUserDashboard();
                 break;
             case 0:
-                printf("Exiting...\");
+                printf("Exiting...\n");
                 return 0;
             default:
-                printf("Invalid choice. Please try again.\");
+                printf("Invalid choice. Please try again.\n");
                 break;
         }
     }

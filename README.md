@@ -1,17 +1,11 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
+#include <string.h>
 void adminPanel();
 void userPanel();
 void newUserRegistration();
 int authenticateUser(char *username, char *password);
 void exitProgram();
-void addEditTrainSchedule();
-void viewTrainSchedule();
-void bookTickets();
-void viewBookedTickets();
-void cancelTickets();
 
 struct Train {
     int trainNumber;
@@ -26,25 +20,11 @@ struct User {
     char password[50];
 };
 
-#define MAX_BOOKED_TICKETS 100
-
-
 struct Train trains[100];
 int numTrains = 0;
 
 struct User users[100];
 int numUsers = 0;
-
-struct BookedTicket {
-    int trainNumber;
-    char source[50];
-    char destination[50];
-    char departureTime[10];
-    int numTickets;
-};
-
-struct BookedTicket bookedTickets[MAX_BOOKED_TICKETS];
-int numBookedTickets = 0;
 
 int main() {
     int choice;
@@ -199,7 +179,6 @@ void exitProgram() {
     exit(0);
 }
 
-
 void addEditTrainSchedule() {
     if (numTrains >= 100) {
         printf("Train schedule limit reached.\n");
@@ -215,7 +194,7 @@ void addEditTrainSchedule() {
     printf("Enter departure time: ");
     scanf("%s", trains[numTrains].departureTime);
     printf("Enter ticket cost: ");
-    scanf("%lf", &trains[numTrains].ticketCost);  // Read the ticket cost
+    scanf("%lf", &trains[numTrains].ticketCost);
 
     numTrains++;
     printf("Train schedule added/edited successfully.\n");
@@ -234,10 +213,10 @@ void viewTrainSchedule() {
     }
 }
 
+
 void bookTickets() {
     int selectedTrain;
     int numTickets;
-
     printf("\nAvailable Trains:\n");
     printf("Train No.\tSource\t\tDestination\tDeparture Time\n");
     for (int i = 0; i < numTrains; i++) {
@@ -253,7 +232,9 @@ void bookTickets() {
             trainIndex = i;
              printf("Enter the number of tickets you want to book: ");
     scanf("%d", &numTickets);
+
     double totalCost = numTickets * trains[trainIndex].ticketCost;
+
     char confirm;
     printf("Total Cost: %.2lf\n", totalCost);
     printf("Confirm booking and payment? (Y/N): ");
@@ -281,64 +262,71 @@ void bookTickets() {
 
 }
 
-
 void viewBookedTickets() {
 
+    struct BookedTicket {
+        int trainNumber;
+        char source[50];
+        char destination[50];
+        char departureTime[10];
+        int numTickets;
+    };
+
+    struct BookedTicket bookedTickets[100];
+    int numBookedTickets = 0;
 
     printf("\nBooked Tickets:\n");
     printf("Train No.\tSource\t\tDestination\tDeparture Time\tNo. of Tickets\n");
     for (int i = 0; i < numBookedTickets; i++) {
-        printf("%d\t\t%s\t\t%s\t\t%s\t\t%d\n", bookedTickets[i].trainNumber, bookedTickets[i].source,
-               bookedTickets[i].destination, bookedTickets[i].departureTime, bookedTickets[i].numTickets);
+        printf("%d\t\t%s\t\t%s\t\t%s\t\t%d\n", bookedTickets[i].trainNumber, bookedTickets[i].source, bookedTickets[i].destination,
+               bookedTickets[i].departureTime, bookedTickets[i].numTickets);
     }
-     if (numBookedTickets == 0) {
-        printf("No booked tickets available.\n");
-        return;
-    }
+
 }
 
+
 void cancelTickets() {
-    int trainNumber;
-    int numTicketsToCancel;
+     int selectedTrain;
+    int numTickets;
 
-  viewBookedTickets();
+    printf("\nBooked tickets:\n");
+    printf("Train No.\tSource\t\tDestination\tDeparture Time\n");
+    for (int i = 0; i < numTrains; i++) {
+        printf("%d\t\t%s\t\t%s\t\t%s\n", trains[i].trainNumber, trains[i].source, trains[i].destination, trains[i].departureTime);
+    }
 
-    printf("Enter the train number for which you want to cancel tickets: ");
-    scanf("%d", &trainNumber);
+    printf("Enter the train number you want to cancel tickets for: ");
+    scanf("%d", &selectedTrain);
 
-    int ticketIndex = -1;
-    for (int i = 0; i < numBookedTickets; i++) {
-        if (bookedTickets[i].trainNumber == trainNumber) {
-            ticketIndex = i;
+    int trainIndex = -1;
+    for (int i = 0; i < numTrains; i++) {
+        if (trains[i].trainNumber == selectedTrain) {
+            trainIndex = i;
+             printf("Enter the number of tickets you want to cancel: ");
+    scanf("%d", &numTickets);
+
+    double totalCost = numTickets * trains[trainIndex].ticketCost;
+
+    char confirm;
+    printf("Total Cost: %.2lf\n", totalCost);
+    printf("Cancel booking and payment? (Y/N): ");
+    scanf(" %c", &confirm);
+
+    if (confirm == 'Y' || confirm == 'y') {
+        printf("Cancelation successful! Booking %d tickets for Train %d from %s to %s at %s.\nYour tickets are cancelled now.\n",
+               numTickets, trains[trainIndex].trainNumber, trains[trainIndex].source, trains[trainIndex].destination,
+               trains[trainIndex].departureTime);
+
+    } else {
+        printf("Erorr number of tickets.\n");
+    }
             break;
         }
     }
 
-    if (ticketIndex == -1) {
-        printf("No booked tickets found for Train %d.\n", trainNumber);
+    if (trainIndex == -1) {
+        printf("Invalid train number. Please try again.\n");
         return;
     }
 
-    printf("Booked Ticket Details:\n");
-    printf("Train No.\tSource\t\tDestination\tDeparture Time\tNo. of Tickets\n");
-    printf("%d\t\t%s\t\t%s\t\t%s\t\t%d\n", bookedTickets[ticketIndex].trainNumber, bookedTickets[ticketIndex].source,
-           bookedTickets[ticketIndex].destination, bookedTickets[ticketIndex].departureTime, bookedTickets[ticketIndex].numTickets);
-
-    printf("Enter the number of tickets you want to cancel: ");
-    scanf("%d", &numTicketsToCancel);
-
-    if (numTicketsToCancel <= 0 || numTicketsToCancel > bookedTickets[ticketIndex].numTickets) {
-        printf("Invalid number of tickets to cancel.\n");
-        return;
-    }
-    bookedTickets[ticketIndex].numTickets -= numTicketsToCancel;
-
-    if (bookedTickets[ticketIndex].numTickets == 0) {
-        for (int i = ticketIndex; i < numBookedTickets - 1; i++) {
-            bookedTickets[i] = bookedTickets[i + 1];
-        }
-        numBookedTickets--;
-    }
-
-    printf("%d tickets canceled for Train %d.\n", numTicketsToCancel, trainNumber);
 }

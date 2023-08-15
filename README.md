@@ -65,11 +65,14 @@ int main() {
 
 void adminPanel() {
      char adminPassword[50];
+     char adminId[50];
     printf("\nAdmin Login:\n");
+    printf("Enter adminId: ");
+    scanf("%s", adminId);
     printf("Enter admin password: ");
     scanf("%s", adminPassword);
 
-    if (strcmp(adminPassword, "123") == 0) {
+   if ((strcmp(adminPassword, "123" )==0)&&(strcmp(adminId,"fahid")==0)) {
         int adminChoice;
 
         printf("\nAdmin Panel:\n");
